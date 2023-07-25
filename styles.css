@@ -51,6 +51,7 @@ button:hover {
   justify-content: left;
   margin-top: 20px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .circle {
@@ -58,7 +59,7 @@ button:hover {
   height: 1rem;
   border-radius: 50%;
   background-color: #888;
-  margin: 0 5px;
+  margin: 5px 5px;
   cursor: pointer;
 }
 
