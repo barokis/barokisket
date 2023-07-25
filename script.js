@@ -17,7 +17,7 @@ let questions = []
 
 let currentQuestion = 0;
 let score = 0;
-const userAnswers = [];
+let userAnswers = [];
 
 function showQuestion() {
   const questionElement = document.getElementById("question");
@@ -96,11 +96,11 @@ function startQuiz() {
         const answerNodes = itemNode.querySelectorAll("answers item");
         const answerArray = Array.from(answerNodes).map((node) => node.textContent);
 
-        console.log(`Item ${id}:`);
-        console.log(`Question: ${question}`);
-        console.log(`Answers: ${answerArray.join(", ")}`);
-        console.log(`Correct answers: ${correctAnswers}`);
-        console.log("------");
+        //console.log(`Item ${id}:`);
+        //console.log(`Question: ${question}`);
+        //console.log(`Answers: ${answerArray.join(", ")}`);
+        //console.log(`Correct answers: ${correctAnswers}`);
+        //console.log("------");
 
         const item = {
           question: question,
@@ -214,4 +214,22 @@ function reviewAnswers() {
   }
 
   reviewQuestionsElement.style.display = "block";
+}
+
+function restartQuiz() {
+  const resultPage = document.getElementById("result-page");
+  const startPage = document.getElementById("start-page");
+  const questionPage = document.getElementById("question-page");
+  const reviewQuestionsElement = document.getElementById("review-questions");
+
+  reviewQuestionsElement.innerHTML = "";
+  reviewQuestionsElement.style.display = "none";
+  startPage.style.display = "none";
+  resultPage.style.display = "none";
+  questionPage.style.display = "block";
+  userAnswers = [];
+  currentQuestion = 0;
+  questions = allQuestions.sort(() => .5 - Math.random()).slice(0,30);
+  
+  showQuestion();
 }
