@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barokis KET</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="container">
+      <h1>Barokis KET</h1>
+    </div>
+  </nav>
+
+  <!-- Start Page -->
+  <div id="start-page" class="container page">
+    <h2>Sveiki atvykę!</h2>
+    <button onclick="startQuiz()">Pradėti testą</button>
+  </div>
+
+  <!-- Question Bar -->
+  <div id="question-page" class="container page">
+    <div id="image"></div>
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <div id="question-list"></div>
+    <button onclick="nextQuestion()">Kitas</button>
+  </div>
+
+  <!-- Result Page -->
+  <div id="result-page" class="container page">
+    <h2>Tavo rezultatas: <span id="score"></span> iš <span id="total-questions"></span></h2>
+    <button onclick="reviewAnswers()">Peržiūrėti atsakymus</button>
+    <div id="review-questions"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

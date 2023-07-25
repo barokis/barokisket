@@ -1,0 +1,90 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+nav {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page {
+  display: none;
+}
+
+#start-page {
+  display: block;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+#options {
+  margin-top: 10px;
+}
+
+#options label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* New styles for question list and review questions */
+#question-list {
+  display: flex;
+  justify-content: left;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.circle {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: #888;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.circle.active {
+  background-color: #333;
+}
+
+#review-questions {
+  display: none;
+  margin-top: 20px;
+}
+
+.review-question {
+  margin-bottom: 20px;
+}
+
+/* Styles for selected and correct answers during review */
+
+.review-question .selected {
+  background-color: #fdd;
+}
+
+.review-question .correct {
+  background-color: #dfd;
+}
+
+.review-question .correct.selected {
+  background-color: rgb(135, 225, 232);
+}
