@@ -24,8 +24,10 @@ function showQuestion() {
   const optionsElement = document.getElementById("options");
   const questionListElement = document.getElementById("question-list");
   const image = document.getElementById("image");
+  const explanations = document.getElementById("explanations-title");
 
   questionElement.textContent = questions[currentQuestion].question;
+  explanations.textContent = questions[currentQuestion].explanations_title;
   optionsElement.innerHTML = "";
 
   if(questions[currentQuestion].image == "1") {
@@ -92,6 +94,7 @@ function startQuiz() {
         const question = itemNode.querySelector("question").textContent;
         const correctAnswers = itemNode.querySelector("question").getAttribute("correct_answers").split(",").map(x => x-1);
         const image = itemNode.querySelector("question").getAttribute("image");
+        const explanation = itemNode.querySelector("question").getAttribute("explanations_title");
 
         const answerNodes = itemNode.querySelectorAll("answers item");
         const answerArray = Array.from(answerNodes).map((node) => node.textContent);
@@ -107,7 +110,8 @@ function startQuiz() {
           id: id,
           options: answerArray,
           image: image,
-          correctAnswers: correctAnswers
+          correctAnswers: correctAnswers,
+          explanations_title: explanation
         }
         allQuestions.push(item);
 
@@ -195,6 +199,9 @@ function reviewAnswers() {
       image.setAttribute('src', `img/${questions[i].id}.${questions[i].image == "1" ? "jpg" : "gif"}`);
       reviewQuestionElement.appendChild(image);
     }
+    const explanationsTitle = document.createElement("b");
+    explanationsTitle.textContent = question.explanations_title;
+    reviewQuestionElement.appendChild(explanationsTitle);
     const optionsList = document.createElement("ul");
     for (let j = 0; j < question.options.length; j++) {
       const option = question.options[j];
