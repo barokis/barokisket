@@ -59,6 +59,7 @@ function showQuestion() {
     if (i === currentQuestion) {
       circle.classList.add("active");
     }
+    circle.textContent = i+1
     circle.setAttribute("onclick", `goToQuestion(${i})`);
     questionListElement.appendChild(circle);
   }
