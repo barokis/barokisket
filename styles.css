@@ -86,14 +86,10 @@ button:hover {
 
 /* Styles for selected and correct answers during review */
 
-.review-question .selected {
+.wrong {
   background-color: #fdd;
 }
 
-.review-question .correct {
+.correct {
   background-color: #dfd;
-}
-
-.review-question .correct.selected {
-  background-color: rgb(135, 225, 232);
 }

@@ -14,6 +14,7 @@
 
 const allQuestions = []
 let questions = []
+let review = false;
 
 let currentQuestion = 0;
 let score = 0;
@@ -24,31 +25,34 @@ function showQuestion() {
   const optionsElement = document.getElementById("options");
   const questionListElement = document.getElementById("question-list");
   const image = document.getElementById("image");
-  const explanations = document.getElementById("explanations-title");
+  const explanations_title = document.getElementById("explanations-title");
+  const explanations = document.getElementById("explanations");
 
   questionElement.textContent = questions[currentQuestion].question;
-  explanations.textContent = questions[currentQuestion].explanations_title;
+  explanations_title.textContent = questions[currentQuestion].explanations_title;
+  explanations.innerHTML = "";
   optionsElement.innerHTML = "";
-
-  if(questions[currentQuestion].image == "1") {
-    image.innerHTML = `<img src='img/${questions[currentQuestion].id}.jpg'>`
-  }
-  else if (questions[currentQuestion].image == "2") {
-    image.innerHTML = `<img src='img/${questions[currentQuestion].id}.gif'>`
-  }
-  else {
-    image.innerHTML = "";
-  }
+  image.innerHTML = `<img src='${questions[currentQuestion].image_url}'>`
 
   for (let i = 0; i < questions[currentQuestion].options.length; i++) {
     const option = questions[currentQuestion].options[i];
     const optionElement = document.createElement("label");
     optionElement.innerHTML = `
         <input type="checkbox" name="answer" value="${i}" ${userAnswers[currentQuestion] && userAnswers[currentQuestion].includes(i) ? "checked" : ""
-      } ${currentQuestion >= questions.length ? "disabled" : ""}>
+      } ${review ? "disabled" : ""}>
         ${option}
       `;
+      if(review == true) {
+        if (questions[currentQuestion].correctAnswers.includes(i)) {
+          optionElement.classList.add("correct");
+        } else {
+          optionElement.classList.add("wrong");
+        }
+      }
     optionsElement.appendChild(optionElement);
+  }
+  if(review == true) {
+    explanations.innerHTML = questions[currentQuestion].explanation1 + questions[currentQuestion].explanation2;
   }
 
   // Update question list
@@ -58,6 +62,13 @@ function showQuestion() {
     circle.classList.add("circle");
     if (i === currentQuestion) {
       circle.classList.add("active");
+    }
+    if(review == true) {
+      if (questions[i].correct) {
+        circle.classList.add("correct");
+      } else {
+        circle.classList.add("wrong");
+      }
     }
     circle.textContent = i+1
     circle.setAttribute("onclick", `goToQuestion(${i})`);
@@ -72,51 +83,13 @@ function startQuiz() {
   startPage.style.display = "none";
   questionPage.style.display = "block";
 
-  fetch("klausimai2.xml")
-    .then(response => response.text())
-    .then(xmlString => {
-      // Create a new DOMParser
-      const parser = new DOMParser();
-
-      // Parse the XML string
-      const xmlDoc = parser.parseFromString(xmlString, "text/xml");
-
-      // Define the XPath expression to retrieve items
-      const xpathExpression = "/root/item";
-
-      // Evaluate the XPath expression
-      const items = xmlDoc.evaluate(xpathExpression, xmlDoc, null, XPathResult.ANY_TYPE, null);
-
-      // Iterate through the items
-      let itemNode = items.iterateNext();
-      while (itemNode) {
-        // Access the item attributes and elements
-        const id = itemNode.getAttribute("id");
-        const question = itemNode.querySelector("question").textContent;
-        const correctAnswers = itemNode.querySelector("question").getAttribute("correct_answers").split(",").map(x => x-1);
-        const image = itemNode.querySelector("question").getAttribute("image");
-        const explanation = itemNode.querySelector("question").getAttribute("explanations_title");
-
-        const answerNodes = itemNode.querySelectorAll("answers item");
-        const answerArray = Array.from(answerNodes).map((node) => node.textContent);
-
-        //console.log(`Item ${id}:`);
-        //console.log(`Question: ${question}`);
-        //console.log(`Answers: ${answerArray.join(", ")}`);
-        //console.log(`Correct answers: ${correctAnswers}`);
-        //console.log("------");
-
-        const item = {
-          question: question,
-          id: id,
-          options: answerArray,
-          image: image,
-          correctAnswers: correctAnswers,
-          explanations_title: explanation
-        }
-        allQuestions.push(item);
-
-        itemNode = items.iterateNext();
+  fetch("klausimai.json")
+    .then(response => response.json())
+    .then(quests => {
+      allQuestions.push(...quests);
+      for(q of allQuestions) {
+        if(q.id.endsWith('kb') && q.image_url != '')
+          q.image_url = `https://www.ketbilietai.lt${q.image_url}`
       }
       questions = allQuestions.sort(() => .5 - Math.random()).slice(0,30)
       showQuestion();
@@ -153,6 +126,7 @@ function showResult() {
   const resultPage = document.getElementById("result-page");
   const scoreElement = document.getElementById("score");
   const totalQuestionsElement = document.getElementById("total-questions");
+  const percentageElement = document.getElementById("percentage");
 
   resultPage.style.display = "block";
   questionPage.style.display = "none";
@@ -160,6 +134,7 @@ function showResult() {
   const finalScore = calculateScore();
   scoreElement.textContent = finalScore;
   totalQuestionsElement.textContent = questions.length;
+  percentageElement.textContent = `(${Math.round(finalScore*100/questions.length)}%)`;
 }
 
 function calculateScore() {
@@ -170,61 +145,27 @@ function calculateScore() {
 
     if (correctAnswers.length === userAnswerIndexes.length && correctAnswers.every((index) => userAnswerIndexes.includes(index))) {
       score++;
+      questions[i]['correct'] = true;
+    } else {
+      questions[i]['correct'] = false;
     }
   }
   return score;
 }
 
 function reviewAnswers() {
+  review = true;
   const questionPage = document.getElementById("question-page");
   const resultPage = document.getElementById("result-page");
-  const reviewQuestionsElement = document.getElementById("review-questions");
 
-  questionPage.style.display = "none";
-  resultPage.style.display = "block";
-
-  reviewQuestionsElement.innerHTML = "";
-  for (let i = 0; i < questions.length; i++) {
-    const question = questions[i];
-    const userAnswerIndexes = userAnswers[i] || [];
-
-    const reviewQuestionElement = document.createElement("div");
-    reviewQuestionElement.classList.add("review-question");
-
-    const questionHeader = document.createElement("h3");
-    questionHeader.textContent = question.question;
-    reviewQuestionElement.appendChild(questionHeader);
-    //IMAGE
-    if(questions[i].image != "0") {
-      const image = document.createElement("img");
-      image.setAttribute('src', `img/${questions[i].id}.${questions[i].image == "1" ? "jpg" : "gif"}`);
-      reviewQuestionElement.appendChild(image);
-    }
-    const explanationsTitle = document.createElement("b");
-    explanationsTitle.textContent = question.explanations_title;
-    reviewQuestionElement.appendChild(explanationsTitle);
-    const optionsList = document.createElement("ul");
-    for (let j = 0; j < question.options.length; j++) {
-      const option = question.options[j];
-      const optionItem = document.createElement("li");
-      optionItem.textContent = option;
-      if (userAnswerIndexes.includes(j)) {
-        optionItem.classList.add("selected");
-      }
-      if (question.correctAnswers.includes(j)) {
-        optionItem.classList.add("correct");
-      }
-      optionsList.appendChild(optionItem);
-    }
-    reviewQuestionElement.appendChild(optionsList);
-
-    reviewQuestionsElement.appendChild(reviewQuestionElement);
-  }
-
-  reviewQuestionsElement.style.display = "block";
+  //resultPage.style.display = "none";
+  questionPage.style.display = "block";
+  currentQuestion = 0;
+  showQuestion();
 }
 
 function restartQuiz() {
+  review = false;
   const resultPage = document.getElementById("result-page");
   const startPage = document.getElementById("start-page");
   const questionPage = document.getElementById("question-page");
