@@ -1,6 +1,40 @@
 img {
+  max-width: 100%;
   height: auto;
-  width: 100%;
+  object-fit: contain;
+}
+
+select {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+
+.image-container {
+  display: flex;
+  justify-items: center;
+  justify-content: center;
+  height: 30vh;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .question-container {
+    height: 50vh;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  .question-container {
+    height: 30vh;
+  }
+}
+
+@media only screen and (min-width: 1025px) {
+  .question-container {
+    height: 30vh;
+  }
 }
 
 body {

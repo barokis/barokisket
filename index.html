@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
+
 <body>
   <!-- Navbar -->
   <nav>
@@ -23,23 +25,50 @@
 
   <!-- Question Bar -->
   <div id="question-page" class="container page">
-    <div id="image"></div>
-    <h2 id="question"></h2>
-    <b id="explanations-title"></b>
-    <div id="options"></div>
+    <div class="image-container" id="image"></div>
+    <div class="question-container">
+      <h2 id="question"></h2>
+      <b id="explanations-title"></b>
+      <div id="options"></div>
+    </div>
     <p id="explanations"></p>
+    <select name="kategorija" id="cat-select">
+      <option value="rizikos">Rizikos, susijusios su motorinės transporto priemonės vairavimu</option>
+      <option value="elegesys">Elgesio taisyklės, važiuojant viešuoju keliu</option>
+      <option value="pirmenybe">Važiavimo pirmenybė ir praleidimas</option>
+      <option value="keliai">Ypatingi keliai ir kelių ruožai, eismo dalyviai ir manevrai</option>
+      <option value="situacijos">Saugus transporto priemonės vairavimas ir regavimas į kritines situacijas</option>
+      <option value="zenklinimas">Kelių ženklinimas, kelio ženklai, šviesoforai ir reguliuotojų nurodymai</option>
+      <option value="atsakingumas">Atsakingas dalyvavimas eisme ir vairavimas atsižvelgiant į aplinką</option>
+      <option value="bendrasis">Bendrieji kelių eismo taisyklių ir kitų teisės aktų, reglamentuojančių kelių eismą,
+        reikalavimai</option>
+      <option value="transportas">Žinios apie transporto priemonę</option>
+    </select>
     <div id="question-list"></div>
     <button onclick="nextQuestion()">Kitas</button>
   </div>
 
   <!-- Result Page -->
   <div id="result-page" class="container page">
-    <h2>Tavo rezultatas: <span id="score"></span> iš <span id="total-questions"></span> <span id="percentage"></span></h2>
+    <h2>Tavo rezultatas: <span id="score"></span> iš <span id="total-questions"></span> <span id="percentage"></span>
+    </h2>
     <button onclick="reviewAnswers()">Peržiūrėti atsakymus</button>
     <button onclick="restartQuiz()">Pradėti iš naujo</button>
     <div id="review-questions"></div>
   </div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RHWRN50TTQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
+    gtag('config', 'G-RHWRN50TTQ');
+  </script>
   <script src="script.js"></script>
 </body>
+
 </html>
