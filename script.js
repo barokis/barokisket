@@ -176,6 +176,19 @@ function uploadResult(finalScore) {
   });
 }
 
+function saveProgress() {
+  const seenQuestions = new Set(JSON.parse(localStorage.getItem('seenQuestions')) || []);
+  const correctQuestions = new Set(JSON.parse(localStorage.getItem('correctQuestions')) || []);
+  for(let i = 0; i < questions.length; i++) {
+    seenQuestions.add(questions[i].id);
+    if(questions[i]['correct'] == true) {
+      correctQuestions.add(questions[i].id);
+    }
+  }
+  localStorage.setItem('seenQuestions', JSON.stringify([...seenQuestions]));
+  localStorage.setItem('correctQuestions', JSON.stringify([...correctQuestions]));
+}
+
 function showResult() {
   const questionPage = document.getElementById("question-page");
   const resultPage = document.getElementById("result-page");
@@ -187,6 +200,7 @@ function showResult() {
   questionPage.style.display = "none";
 
   const finalScore = calculateScore();
+  saveProgress();
   uploadResult(finalScore);
   scoreElement.textContent = finalScore;
   totalQuestionsElement.textContent = questions.length;
@@ -237,5 +251,26 @@ function restartQuiz() {
   currentQuestion = 0;
   questions = allQuestions.sort(() => .5 - Math.random()).slice(0, 30);
 
+  showQuestion();
+}
+
+function restartQuizNoCorrect() {
+  review = false;
+  const resultPage = document.getElementById("result-page");
+  const startPage = document.getElementById("start-page");
+  const questionPage = document.getElementById("question-page");
+  const reviewQuestionsElement = document.getElementById("review-questions");
+
+  reviewQuestionsElement.innerHTML = "";
+  reviewQuestionsElement.style.display = "none";
+  startPage.style.display = "none";
+  resultPage.style.display = "none";
+  questionPage.style.display = "block";
+  userAnswers = [];
+  categoryAnswers = [];
+  currentQuestion = 0;
+  const correctQuestions = JSON.parse(localStorage.getItem('correctQuestions')) || [];
+  let filteredQuestions = allQuestions.filter(element => !correctQuestions.includes(element.id));
+  questions = filteredQuestions.sort(() => .5 - Math.random()).slice(0, 30);
   showQuestion();
 }
